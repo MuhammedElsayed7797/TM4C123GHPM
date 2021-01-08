@@ -25,188 +25,216 @@ extern uint8 Mcu_GpioBusAperture [] ;
  * mode, peripheral signal, internal resistor, drive strength,
  * slew rate, protection lock , ADC & DMA trigger feature .
  * initialization will be according to setting in Port_Cfg.h file .
- * follow rules demonstrated in Port_Cfg.h file to make proper initialization .
- *
+ * follow rules demonstrated in this Port_Cfg.h file to make proper initialization .
+ * Mask will determine ports to be initiated according whether port bit in Mask is set or not
+ * there're 6 ports A~F, LSB is assigned to A and 6th bit assigned to F
+ * don't initiate a port with disabled clock or fault exception will be generated
  */
 
-void Port_Init (void)
+void Port_Init ( uint8 Mask )
 {
 
     Port_RegisterMap_Struct * RegisterBase = NULL_PTR ;
 
+    /*********************************************************************************/
+
+    if ( (Mask>>PORT_A_NUMBER) & TRUE )
+    {
+        RegisterBase =  PORT_BASE_REG_EQU(PORT_A_NUMBER) ;
+
+        RegisterBase->Port_GPIODIR = PORT_MODE_PUSH_OUT_0_7 | PORT_MODE_DRAIN_OUT_0_7 & ~PORT_MODE_DIGITAL_IN_0_7 & ~PORT_MODE_ANALOG_IN_0_7 ;
+        RegisterBase->Port_GPIOAFSEL = PORT_MODE_PUSH_ALT_0_7 | PORT_MODE_DRAIN_ALT_0_7 & ~PORT_MODE_DIGITAL_IN_0_7 & ~PORT_MODE_ANALOG_IN_0_7 & ~PORT_MODE_PUSH_OUT_0_7 & ~PORT_MODE_DRAIN_OUT_0_7 ;
+        RegisterBase->Port_GPIOODR = PORT_MODE_DRAIN_OUT_0_7 | PORT_MODE_DRAIN_ALT_0_7  & ~PORT_MODE_PUSH_OUT_0_7 & ~PORT_MODE_PUSH_ALT_0_7 ;
+        RegisterBase->Port_GPIODEN = ~PORT_MODE_TRI_STATE_0_7 & ~PORT_MODE_ANALOG_IN_0_7 ;
+        RegisterBase->Port_GPIOAMSEL = PORT_MODE_ANALOG_IN_0_7 & ~PORT_MODE_DIGITAL_IN_0_7 & ~PORT_MODE_PUSH_OUT_0_7 & ~PORT_MODE_DRAIN_OUT_0_7 & ~PORT_MODE_PUSH_ALT_0_7 & ~PORT_MODE_DRAIN_ALT_0_7 & ~PORT_MODE_TRI_STATE_0_7 ;
+
+        RegisterBase->Port_GPIOPCTL = PORT_PERIPHERAL_0_7 ;
+
+        RegisterBase->Port_GPIOPUR = PORT_INTERNAL_RES_TYPE_0_7 & PORT_INTERNAL_RES_EN_0_7 ;
+        RegisterBase->Port_GPIOPDR = ~PORT_INTERNAL_RES_TYPE_0_7 & PORT_INTERNAL_RES_EN_0_7 ;
+
+        RegisterBase->Port_GPIODR2R = PORT_2MA_DRIVE_EN_0_7 ;
+        RegisterBase->Port_GPIODR4R = PORT_4MA_DRIVE_EN_0_7 ;
+        RegisterBase->Port_GPIODR8R = PORT_8MA_DRIVE_EN_0_7 ;
+
+        RegisterBase->Port_GPIOSLR = PORT_SLEW_RATE_CTL_EN_0_7 ;
+
+        RegisterBase->Port_GPIOADCCTL = PORT_ADC_TRIGGER_EN_0_7 ;
+        RegisterBase->Port_GPIODMACTL = PORT_DMA_TRIGGER_EN_0_7 ;
+    }
+    else
+    {
+    }
+
+    /*********************************************************************************/
+
+    if ( (Mask>>PORT_B_NUMBER) & TRUE )
+    {
+        RegisterBase =  PORT_BASE_REG_EQU(PORT_B_NUMBER) ;
+
+        RegisterBase->Port_GPIODIR = PORT_MODE_PUSH_OUT_0_7 | PORT_MODE_DRAIN_OUT_8_15 & ~PORT_MODE_DIGITAL_IN_8_15 & ~PORT_MODE_ANALOG_IN_8_15 ;
+        RegisterBase->Port_GPIOAFSEL = PORT_MODE_PUSH_ALT_8_15 | PORT_MODE_DRAIN_ALT_8_15 & ~PORT_MODE_DIGITAL_IN_8_15 & ~PORT_MODE_ANALOG_IN_8_15 & ~PORT_MODE_PUSH_OUT_8_15 & ~PORT_MODE_DRAIN_OUT_8_15 ;
+        RegisterBase->Port_GPIOODR = PORT_MODE_DRAIN_OUT_8_15 | PORT_MODE_DRAIN_ALT_8_15  & ~PORT_MODE_PUSH_OUT_8_15 & ~PORT_MODE_PUSH_ALT_8_15 ;
+        RegisterBase->Port_GPIODEN = ~PORT_MODE_TRI_STATE_8_15 & ~PORT_MODE_ANALOG_IN_8_15 ;
+        RegisterBase->Port_GPIOAMSEL = PORT_MODE_ANALOG_IN_8_15 & ~PORT_MODE_DIGITAL_IN_8_15 & ~PORT_MODE_PUSH_OUT_8_15 & ~PORT_MODE_DRAIN_OUT_8_15 & ~PORT_MODE_PUSH_ALT_8_15 & ~PORT_MODE_DRAIN_ALT_8_15 & ~PORT_MODE_TRI_STATE_8_15 ;
+
+        RegisterBase->Port_GPIOPCTL = PORT_PERIPHERAL_8_15 ;
+
+        RegisterBase->Port_GPIOPUR = PORT_INTERNAL_RES_TYPE_8_15 & PORT_INTERNAL_RES_EN_8_15 ;
+        RegisterBase->Port_GPIOPDR = ~PORT_INTERNAL_RES_TYPE_8_15 & PORT_INTERNAL_RES_EN_8_15 ;
+
+        RegisterBase->Port_GPIODR2R = PORT_2MA_DRIVE_EN_8_15 ;
+        RegisterBase->Port_GPIODR4R = PORT_4MA_DRIVE_EN_8_15 ;
+        RegisterBase->Port_GPIODR8R = PORT_8MA_DRIVE_EN_8_15 ;
+
+        RegisterBase->Port_GPIOSLR = PORT_SLEW_RATE_CTL_EN_8_15 ;
+
+        RegisterBase->Port_GPIOADCCTL = PORT_ADC_TRIGGER_EN_8_15 ;
+        RegisterBase->Port_GPIODMACTL = PORT_DMA_TRIGGER_EN_8_15 ;
+    }
+    else
+    {
+    }
+
+    /*********************************************************************************/
+
+    if ( (Mask>>PORT_C_NUMBER) & TRUE )
+    {
+        RegisterBase =  PORT_BASE_REG_EQU(PORT_C_NUMBER) ;
 
 #if PORT_PIN_UNLOCK_16_19 > 0
 
-    RegisterBase =  PORT_BASE_REG_EQU(PORT_C_NUMBER) ;
-    RegisterBase->Port_GPIOLOCK = 0x4C4F434B ;
-    RegisterBase->Port_GPIOCR = PORT_PIN_UNLOCK_16_19 ;
+        RegisterBase->Port_GPIOLOCK = 0x4C4F434B ;
+        RegisterBase->Port_GPIOCR = PORT_PIN_UNLOCK_16_19 ;
 
 #endif
+
+        RegisterBase->Port_GPIODIR = PORT_MODE_PUSH_OUT_16_23 | PORT_MODE_DRAIN_OUT_16_23 & ~PORT_MODE_DIGITAL_IN_16_23 & ~PORT_MODE_ANALOG_IN_16_23 ;
+        RegisterBase->Port_GPIOAFSEL = PORT_MODE_PUSH_ALT_16_23 | PORT_MODE_DRAIN_ALT_16_23 & ~PORT_MODE_DIGITAL_IN_16_23 & ~PORT_MODE_ANALOG_IN_16_23 & ~PORT_MODE_PUSH_OUT_16_23 & ~PORT_MODE_DRAIN_OUT_16_23 ;
+        RegisterBase->Port_GPIOODR = PORT_MODE_DRAIN_OUT_16_23 | PORT_MODE_DRAIN_ALT_16_23  & ~PORT_MODE_PUSH_OUT_16_23 & ~PORT_MODE_PUSH_ALT_16_23 ;
+        RegisterBase->Port_GPIODEN = ~PORT_MODE_TRI_STATE_16_23 & ~PORT_MODE_ANALOG_IN_16_23 ;
+        RegisterBase->Port_GPIOAMSEL = PORT_MODE_ANALOG_IN_16_23 & ~PORT_MODE_DIGITAL_IN_16_23 & ~PORT_MODE_PUSH_OUT_16_23 & ~PORT_MODE_DRAIN_OUT_16_23 & ~PORT_MODE_PUSH_ALT_16_23 & ~PORT_MODE_DRAIN_ALT_16_23 & ~PORT_MODE_TRI_STATE_16_23 ;
+
+        RegisterBase->Port_GPIOPCTL = PORT_PERIPHERAL_16_23 ;
+
+        RegisterBase->Port_GPIOPUR = PORT_INTERNAL_RES_TYPE_16_23 & PORT_INTERNAL_RES_EN_16_23 ;
+        RegisterBase->Port_GPIOPDR = ~PORT_INTERNAL_RES_TYPE_16_23 & PORT_INTERNAL_RES_EN_16_23 ;
+
+        RegisterBase->Port_GPIODR2R = PORT_2MA_DRIVE_EN_16_23 ;
+        RegisterBase->Port_GPIODR4R = PORT_4MA_DRIVE_EN_16_23 ;
+        RegisterBase->Port_GPIODR8R = PORT_8MA_DRIVE_EN_16_23 ;
+
+        RegisterBase->Port_GPIOSLR = PORT_SLEW_RATE_CTL_EN_16_23 ;
+
+        RegisterBase->Port_GPIOADCCTL = PORT_ADC_TRIGGER_EN_16_23 ;
+        RegisterBase->Port_GPIODMACTL = PORT_DMA_TRIGGER_EN_16_23 ;
+    }
+    else
+    {
+    }
+
+    /*********************************************************************************/
+
+    if ( (Mask>>PORT_D_NUMBER) & TRUE )
+    {
+        RegisterBase =  PORT_BASE_REG_EQU(PORT_D_NUMBER) ;
 
 #if TRUE == PORT_PIN_UNLOCK_31
 
-    RegisterBase =  PORT_BASE_REG_EQU(PORT_D_NUMBER) ;
-    RegisterBase->Port_GPIOLOCK = 0x4C4F434B ;
-    ASSIGN_BIT ( RegisterBase->Port_GPIOCR, PORT_PIN31_REG_OFFSET, PORT_PIN_UNLOCK_31 ) ;
+        RegisterBase->Port_GPIOLOCK = 0x4C4F434B ;
+        ASSIGN_BIT ( RegisterBase->Port_GPIOCR, PORT_PIN31_REG_OFFSET, PORT_PIN_UNLOCK_31 ) ;
 
 #endif
 
+        RegisterBase->Port_GPIODIR = PORT_MODE_PUSH_OUT_24_31 | PORT_MODE_DRAIN_OUT_24_31 & ~PORT_MODE_DIGITAL_IN_24_31 & ~PORT_MODE_ANALOG_IN_24_31 ;
+        RegisterBase->Port_GPIOAFSEL = PORT_MODE_PUSH_ALT_24_31 | PORT_MODE_DRAIN_ALT_24_31 & ~PORT_MODE_DIGITAL_IN_24_31 & ~PORT_MODE_ANALOG_IN_24_31 & ~PORT_MODE_PUSH_OUT_24_31 & ~PORT_MODE_DRAIN_OUT_24_31 ;
+        RegisterBase->Port_GPIOODR = PORT_MODE_DRAIN_OUT_24_31 | PORT_MODE_DRAIN_ALT_24_31  & ~PORT_MODE_PUSH_OUT_24_31 & ~PORT_MODE_PUSH_ALT_24_31 ;
+        RegisterBase->Port_GPIODEN = ~PORT_MODE_TRI_STATE_24_31 & ~PORT_MODE_ANALOG_IN_24_31 ;
+        RegisterBase->Port_GPIOAMSEL = PORT_MODE_ANALOG_IN_24_31 & ~PORT_MODE_DIGITAL_IN_24_31 & ~PORT_MODE_PUSH_OUT_24_31 & ~PORT_MODE_DRAIN_OUT_24_31 & ~PORT_MODE_PUSH_ALT_24_31 & ~PORT_MODE_DRAIN_ALT_24_31 & ~PORT_MODE_TRI_STATE_24_31 ;
+
+        RegisterBase->Port_GPIOPCTL = PORT_PERIPHERAL_24_31 ;
+
+        RegisterBase->Port_GPIOPUR = PORT_INTERNAL_RES_TYPE_24_31 & PORT_INTERNAL_RES_EN_24_31 ;
+        RegisterBase->Port_GPIOPDR = ~PORT_INTERNAL_RES_TYPE_24_31 & PORT_INTERNAL_RES_EN_24_31 ;
+
+        RegisterBase->Port_GPIODR2R = PORT_2MA_DRIVE_EN_24_31 ;
+        RegisterBase->Port_GPIODR4R = PORT_4MA_DRIVE_EN_24_31 ;
+        RegisterBase->Port_GPIODR8R = PORT_8MA_DRIVE_EN_24_31 ;
+
+        RegisterBase->Port_GPIOSLR = PORT_SLEW_RATE_CTL_EN_24_31 ;
+
+        RegisterBase->Port_GPIOADCCTL = PORT_ADC_TRIGGER_EN_24_31 ;
+        RegisterBase->Port_GPIODMACTL = PORT_DMA_TRIGGER_EN_24_31 ;
+    }
+    else
+    {
+    }
+
+    /*********************************************************************************/
+
+    if ( (Mask>>PORT_E_NUMBER) & TRUE )
+    {
+        RegisterBase =  PORT_BASE_REG_EQU(PORT_E_NUMBER) ;
+
+        RegisterBase->Port_GPIODIR = PORT_MODE_PUSH_OUT_32_37 | PORT_MODE_DRAIN_OUT_32_37 & ~PORT_MODE_DIGITAL_IN_32_37 & ~PORT_MODE_ANALOG_IN_32_37 ;
+        RegisterBase->Port_GPIOAFSEL = PORT_MODE_PUSH_ALT_32_37 | PORT_MODE_DRAIN_ALT_32_37 & ~PORT_MODE_DIGITAL_IN_32_37 & ~PORT_MODE_ANALOG_IN_32_37 & ~PORT_MODE_PUSH_OUT_32_37 & ~PORT_MODE_DRAIN_OUT_32_37 ;
+        RegisterBase->Port_GPIOODR = PORT_MODE_DRAIN_OUT_32_37 | PORT_MODE_DRAIN_ALT_32_37  & ~PORT_MODE_PUSH_OUT_32_37 & ~PORT_MODE_PUSH_ALT_32_37 ;
+        RegisterBase->Port_GPIODEN = ~PORT_MODE_TRI_STATE_32_37 & ~PORT_MODE_ANALOG_IN_32_37 ;
+        RegisterBase->Port_GPIOAMSEL = PORT_MODE_ANALOG_IN_32_37 & ~PORT_MODE_DIGITAL_IN_32_37 & ~PORT_MODE_PUSH_OUT_32_37 & ~PORT_MODE_DRAIN_OUT_32_37 & ~PORT_MODE_PUSH_ALT_32_37 & ~PORT_MODE_DRAIN_ALT_32_37 & ~PORT_MODE_TRI_STATE_32_37 ;
+
+        RegisterBase->Port_GPIOPCTL = PORT_PERIPHERAL_32_37 ;
+
+        RegisterBase->Port_GPIOPUR = PORT_INTERNAL_RES_TYPE_32_37 & PORT_INTERNAL_RES_EN_32_37 ;
+        RegisterBase->Port_GPIOPDR = ~PORT_INTERNAL_RES_TYPE_32_37 & PORT_INTERNAL_RES_EN_32_37 ;
+
+        RegisterBase->Port_GPIODR2R = PORT_2MA_DRIVE_EN_32_37 ;
+        RegisterBase->Port_GPIODR4R = PORT_4MA_DRIVE_EN_32_37 ;
+        RegisterBase->Port_GPIODR8R = PORT_8MA_DRIVE_EN_32_37 ;
+
+        RegisterBase->Port_GPIOSLR = PORT_SLEW_RATE_CTL_EN_32_37 ;
+
+        RegisterBase->Port_GPIOADCCTL = PORT_ADC_TRIGGER_EN_32_37 ;
+        RegisterBase->Port_GPIODMACTL = PORT_DMA_TRIGGER_EN_32_37 ;
+    }
+    else
+    {
+    }
+
+    /*********************************************************************************/
+
+    if ( (Mask>>PORT_F_NUMBER) & TRUE )
+    {
+        RegisterBase =  PORT_BASE_REG_EQU(PORT_F_NUMBER) ;
 
 #if TRUE == PORT_PIN_UNLOCK_38
 
-
-
-
-    RegisterBase =  PORT_BASE_REG_EQU(PORT_F_NUMBER) ;
-    RegisterBase->Port_GPIOLOCK = PORT_GPIOLOCK_PASSWORD ;
-    ASSIGN_BIT ( RegisterBase->Port_GPIOCR, PORT_PIN38_REG_OFFSET, PORT_PIN_UNLOCK_38 ) ;
+        RegisterBase->Port_GPIOLOCK = PORT_GPIOLOCK_PASSWORD ;
+        ASSIGN_BIT ( RegisterBase->Port_GPIOCR, PORT_PIN38_REG_OFFSET, PORT_PIN_UNLOCK_38 ) ;
 
 #endif
+        RegisterBase->Port_GPIODIR = PORT_MODE_PUSH_OUT_38_42 | PORT_MODE_DRAIN_OUT_38_42 & ~PORT_MODE_DIGITAL_IN_38_42 & ~PORT_MODE_ANALOG_IN_38_42 ;
+        RegisterBase->Port_GPIOAFSEL = PORT_MODE_PUSH_ALT_38_42 | PORT_MODE_DRAIN_ALT_38_42 & ~PORT_MODE_DIGITAL_IN_38_42 & ~PORT_MODE_ANALOG_IN_38_42 & ~PORT_MODE_PUSH_OUT_38_42 & ~PORT_MODE_DRAIN_OUT_38_42 ;
+        RegisterBase->Port_GPIOODR = PORT_MODE_DRAIN_OUT_38_42 | PORT_MODE_DRAIN_ALT_38_42  & ~PORT_MODE_PUSH_OUT_38_42 & ~PORT_MODE_PUSH_ALT_38_42 ;
+        RegisterBase->Port_GPIODEN = ~PORT_MODE_TRI_STATE_38_42 & ~PORT_MODE_ANALOG_IN_38_42 ;
+        RegisterBase->Port_GPIOAMSEL = PORT_MODE_ANALOG_IN_38_42 & ~PORT_MODE_DIGITAL_IN_38_42 & ~PORT_MODE_PUSH_OUT_38_42 & ~PORT_MODE_DRAIN_OUT_38_42 & ~PORT_MODE_PUSH_ALT_38_42 & ~PORT_MODE_DRAIN_ALT_38_42 & ~PORT_MODE_TRI_STATE_38_42 ;
 
-    /*********************************************************************************/
+        RegisterBase->Port_GPIOPCTL = PORT_PERIPHERAL_38_42 ;
 
-    RegisterBase =  PORT_BASE_REG_EQU(PORT_A_NUMBER) ;
+        RegisterBase->Port_GPIOPUR = PORT_INTERNAL_RES_TYPE_38_42 & PORT_INTERNAL_RES_EN_38_42 ;
+        RegisterBase->Port_GPIOPDR = ~PORT_INTERNAL_RES_TYPE_38_42 & PORT_INTERNAL_RES_EN_38_42 ;
 
-    RegisterBase->Port_GPIODIR = PORT_MODE_PUSH_OUT_0_7 | PORT_MODE_DRAIN_OUT_0_7 & ~PORT_MODE_DIGITAL_IN_0_7 & ~PORT_MODE_ANALOG_IN_0_7 ;
-    RegisterBase->Port_GPIOAFSEL = PORT_MODE_PUSH_ALT_0_7 | PORT_MODE_DRAIN_ALT_0_7 & ~PORT_MODE_DIGITAL_IN_0_7 & ~PORT_MODE_ANALOG_IN_0_7 & ~PORT_MODE_PUSH_OUT_0_7 & ~PORT_MODE_DRAIN_OUT_0_7 ;
-    RegisterBase->Port_GPIOODR = PORT_MODE_DRAIN_OUT_0_7 | PORT_MODE_DRAIN_ALT_0_7  & ~PORT_MODE_PUSH_OUT_0_7 & ~PORT_MODE_PUSH_ALT_0_7 ;
-    RegisterBase->Port_GPIODEN = ~PORT_MODE_TRI_STATE_0_7 & ~PORT_MODE_ANALOG_IN_0_7 ;
-    RegisterBase->Port_GPIOAMSEL = PORT_MODE_ANALOG_IN_0_7 & ~PORT_MODE_DIGITAL_IN_0_7 & ~PORT_MODE_PUSH_OUT_0_7 & ~PORT_MODE_DRAIN_OUT_0_7 & ~PORT_MODE_PUSH_ALT_0_7 & ~PORT_MODE_DRAIN_ALT_0_7 & ~PORT_MODE_TRI_STATE_0_7 ;
+        RegisterBase->Port_GPIODR2R = PORT_2MA_DRIVE_EN_38_42 ;
+        RegisterBase->Port_GPIODR4R = PORT_4MA_DRIVE_EN_38_42 ;
+        RegisterBase->Port_GPIODR8R = PORT_8MA_DRIVE_EN_38_42 ;
 
-    RegisterBase->Port_GPIOPCTL = PORT_PERIPHERAL_0_7 ;
+        RegisterBase->Port_GPIOSLR = PORT_SLEW_RATE_CTL_EN_38_42 ;
 
-    RegisterBase->Port_GPIOPUR = PORT_INTERNAL_RES_TYPE_0_7 & PORT_INTERNAL_RES_EN_0_7 ;
-    RegisterBase->Port_GPIOPDR = ~PORT_INTERNAL_RES_TYPE_0_7 & PORT_INTERNAL_RES_EN_0_7 ;
-
-    RegisterBase->Port_GPIODR2R = PORT_2MA_DRIVE_EN_0_7 ;
-    RegisterBase->Port_GPIODR4R = PORT_4MA_DRIVE_EN_0_7 ;
-    RegisterBase->Port_GPIODR8R = PORT_8MA_DRIVE_EN_0_7 ;
-
-    RegisterBase->Port_GPIOSLR = PORT_SLEW_RATE_CTL_EN_0_7 ;
-
-    RegisterBase->Port_GPIOADCCTL = PORT_ADC_TRIGGER_EN_0_7 ;
-    RegisterBase->Port_GPIODMACTL = PORT_DMA_TRIGGER_EN_0_7 ;
-
-    /*********************************************************************************/
-
-    RegisterBase =  PORT_BASE_REG_EQU(PORT_B_NUMBER) ;
-
-    RegisterBase->Port_GPIODIR = PORT_MODE_PUSH_OUT_0_7 | PORT_MODE_DRAIN_OUT_8_15 & ~PORT_MODE_DIGITAL_IN_8_15 & ~PORT_MODE_ANALOG_IN_8_15 ;
-    RegisterBase->Port_GPIOAFSEL = PORT_MODE_PUSH_ALT_8_15 | PORT_MODE_DRAIN_ALT_8_15 & ~PORT_MODE_DIGITAL_IN_8_15 & ~PORT_MODE_ANALOG_IN_8_15 & ~PORT_MODE_PUSH_OUT_8_15 & ~PORT_MODE_DRAIN_OUT_8_15 ;
-    RegisterBase->Port_GPIOODR = PORT_MODE_DRAIN_OUT_8_15 | PORT_MODE_DRAIN_ALT_8_15  & ~PORT_MODE_PUSH_OUT_8_15 & ~PORT_MODE_PUSH_ALT_8_15 ;
-    RegisterBase->Port_GPIODEN = ~PORT_MODE_TRI_STATE_8_15 & ~PORT_MODE_ANALOG_IN_8_15 ;
-    RegisterBase->Port_GPIOAMSEL = PORT_MODE_ANALOG_IN_8_15 & ~PORT_MODE_DIGITAL_IN_8_15 & ~PORT_MODE_PUSH_OUT_8_15 & ~PORT_MODE_DRAIN_OUT_8_15 & ~PORT_MODE_PUSH_ALT_8_15 & ~PORT_MODE_DRAIN_ALT_8_15 & ~PORT_MODE_TRI_STATE_8_15 ;
-
-    RegisterBase->Port_GPIOPCTL = PORT_PERIPHERAL_8_15 ;
-
-    RegisterBase->Port_GPIOPUR = PORT_INTERNAL_RES_TYPE_8_15 & PORT_INTERNAL_RES_EN_8_15 ;
-    RegisterBase->Port_GPIOPDR = ~PORT_INTERNAL_RES_TYPE_8_15 & PORT_INTERNAL_RES_EN_8_15 ;
-
-    RegisterBase->Port_GPIODR2R = PORT_2MA_DRIVE_EN_8_15 ;
-    RegisterBase->Port_GPIODR4R = PORT_4MA_DRIVE_EN_8_15 ;
-    RegisterBase->Port_GPIODR8R = PORT_8MA_DRIVE_EN_8_15 ;
-
-    RegisterBase->Port_GPIOSLR = PORT_SLEW_RATE_CTL_EN_8_15 ;
-
-    RegisterBase->Port_GPIOADCCTL = PORT_ADC_TRIGGER_EN_8_15 ;
-    RegisterBase->Port_GPIODMACTL = PORT_DMA_TRIGGER_EN_8_15 ;
-
-    /*********************************************************************************/
-
-    RegisterBase =  PORT_BASE_REG_EQU(PORT_C_NUMBER) ;
-
-    RegisterBase->Port_GPIODIR = PORT_MODE_PUSH_OUT_16_23 | PORT_MODE_DRAIN_OUT_16_23 & ~PORT_MODE_DIGITAL_IN_16_23 & ~PORT_MODE_ANALOG_IN_16_23 ;
-    RegisterBase->Port_GPIOAFSEL = PORT_MODE_PUSH_ALT_16_23 | PORT_MODE_DRAIN_ALT_16_23 & ~PORT_MODE_DIGITAL_IN_16_23 & ~PORT_MODE_ANALOG_IN_16_23 & ~PORT_MODE_PUSH_OUT_16_23 & ~PORT_MODE_DRAIN_OUT_16_23 ;
-    RegisterBase->Port_GPIOODR = PORT_MODE_DRAIN_OUT_16_23 | PORT_MODE_DRAIN_ALT_16_23  & ~PORT_MODE_PUSH_OUT_16_23 & ~PORT_MODE_PUSH_ALT_16_23 ;
-    RegisterBase->Port_GPIODEN = ~PORT_MODE_TRI_STATE_16_23 & ~PORT_MODE_ANALOG_IN_16_23 ;
-    RegisterBase->Port_GPIOAMSEL = PORT_MODE_ANALOG_IN_16_23 & ~PORT_MODE_DIGITAL_IN_16_23 & ~PORT_MODE_PUSH_OUT_16_23 & ~PORT_MODE_DRAIN_OUT_16_23 & ~PORT_MODE_PUSH_ALT_16_23 & ~PORT_MODE_DRAIN_ALT_16_23 & ~PORT_MODE_TRI_STATE_16_23 ;
-
-    RegisterBase->Port_GPIOPCTL = PORT_PERIPHERAL_16_23 ;
-
-    RegisterBase->Port_GPIOPUR = PORT_INTERNAL_RES_TYPE_16_23 & PORT_INTERNAL_RES_EN_16_23 ;
-    RegisterBase->Port_GPIOPDR = ~PORT_INTERNAL_RES_TYPE_16_23 & PORT_INTERNAL_RES_EN_16_23 ;
-
-    RegisterBase->Port_GPIODR2R = PORT_2MA_DRIVE_EN_16_23 ;
-    RegisterBase->Port_GPIODR4R = PORT_4MA_DRIVE_EN_16_23 ;
-    RegisterBase->Port_GPIODR8R = PORT_8MA_DRIVE_EN_16_23 ;
-
-    RegisterBase->Port_GPIOSLR = PORT_SLEW_RATE_CTL_EN_16_23 ;
-
-    RegisterBase->Port_GPIOADCCTL = PORT_ADC_TRIGGER_EN_16_23 ;
-    RegisterBase->Port_GPIODMACTL = PORT_DMA_TRIGGER_EN_16_23 ;
-
-    /*********************************************************************************/
-
-    RegisterBase =  PORT_BASE_REG_EQU(PORT_D_NUMBER) ;
-
-    RegisterBase->Port_GPIODIR = PORT_MODE_PUSH_OUT_24_31 | PORT_MODE_DRAIN_OUT_24_31 & ~PORT_MODE_DIGITAL_IN_24_31 & ~PORT_MODE_ANALOG_IN_24_31 ;
-    RegisterBase->Port_GPIOAFSEL = PORT_MODE_PUSH_ALT_24_31 | PORT_MODE_DRAIN_ALT_24_31 & ~PORT_MODE_DIGITAL_IN_24_31 & ~PORT_MODE_ANALOG_IN_24_31 & ~PORT_MODE_PUSH_OUT_24_31 & ~PORT_MODE_DRAIN_OUT_24_31 ;
-    RegisterBase->Port_GPIOODR = PORT_MODE_DRAIN_OUT_24_31 | PORT_MODE_DRAIN_ALT_24_31  & ~PORT_MODE_PUSH_OUT_24_31 & ~PORT_MODE_PUSH_ALT_24_31 ;
-    RegisterBase->Port_GPIODEN = ~PORT_MODE_TRI_STATE_24_31 & ~PORT_MODE_ANALOG_IN_24_31 ;
-    RegisterBase->Port_GPIOAMSEL = PORT_MODE_ANALOG_IN_24_31 & ~PORT_MODE_DIGITAL_IN_24_31 & ~PORT_MODE_PUSH_OUT_24_31 & ~PORT_MODE_DRAIN_OUT_24_31 & ~PORT_MODE_PUSH_ALT_24_31 & ~PORT_MODE_DRAIN_ALT_24_31 & ~PORT_MODE_TRI_STATE_24_31 ;
-
-    RegisterBase->Port_GPIOPCTL = PORT_PERIPHERAL_24_31 ;
-
-    RegisterBase->Port_GPIOPUR = PORT_INTERNAL_RES_TYPE_24_31 & PORT_INTERNAL_RES_EN_24_31 ;
-    RegisterBase->Port_GPIOPDR = ~PORT_INTERNAL_RES_TYPE_24_31 & PORT_INTERNAL_RES_EN_24_31 ;
-
-    RegisterBase->Port_GPIODR2R = PORT_2MA_DRIVE_EN_24_31 ;
-    RegisterBase->Port_GPIODR4R = PORT_4MA_DRIVE_EN_24_31 ;
-    RegisterBase->Port_GPIODR8R = PORT_8MA_DRIVE_EN_24_31 ;
-
-    RegisterBase->Port_GPIOSLR = PORT_SLEW_RATE_CTL_EN_24_31 ;
-
-    RegisterBase->Port_GPIOADCCTL = PORT_ADC_TRIGGER_EN_24_31 ;
-    RegisterBase->Port_GPIODMACTL = PORT_DMA_TRIGGER_EN_24_31 ;
-
-    /*********************************************************************************/
-
-    RegisterBase =  PORT_BASE_REG_EQU(PORT_E_NUMBER) ;
-
-    RegisterBase->Port_GPIODIR = PORT_MODE_PUSH_OUT_32_37 | PORT_MODE_DRAIN_OUT_32_37 & ~PORT_MODE_DIGITAL_IN_32_37 & ~PORT_MODE_ANALOG_IN_32_37 ;
-    RegisterBase->Port_GPIOAFSEL = PORT_MODE_PUSH_ALT_32_37 | PORT_MODE_DRAIN_ALT_32_37 & ~PORT_MODE_DIGITAL_IN_32_37 & ~PORT_MODE_ANALOG_IN_32_37 & ~PORT_MODE_PUSH_OUT_32_37 & ~PORT_MODE_DRAIN_OUT_32_37 ;
-    RegisterBase->Port_GPIOODR = PORT_MODE_DRAIN_OUT_32_37 | PORT_MODE_DRAIN_ALT_32_37  & ~PORT_MODE_PUSH_OUT_32_37 & ~PORT_MODE_PUSH_ALT_32_37 ;
-    RegisterBase->Port_GPIODEN = ~PORT_MODE_TRI_STATE_32_37 & ~PORT_MODE_ANALOG_IN_32_37 ;
-    RegisterBase->Port_GPIOAMSEL = PORT_MODE_ANALOG_IN_32_37 & ~PORT_MODE_DIGITAL_IN_32_37 & ~PORT_MODE_PUSH_OUT_32_37 & ~PORT_MODE_DRAIN_OUT_32_37 & ~PORT_MODE_PUSH_ALT_32_37 & ~PORT_MODE_DRAIN_ALT_32_37 & ~PORT_MODE_TRI_STATE_32_37 ;
-
-    RegisterBase->Port_GPIOPCTL = PORT_PERIPHERAL_32_37 ;
-
-    RegisterBase->Port_GPIOPUR = PORT_INTERNAL_RES_TYPE_32_37 & PORT_INTERNAL_RES_EN_32_37 ;
-    RegisterBase->Port_GPIOPDR = ~PORT_INTERNAL_RES_TYPE_32_37 & PORT_INTERNAL_RES_EN_32_37 ;
-
-    RegisterBase->Port_GPIODR2R = PORT_2MA_DRIVE_EN_32_37 ;
-    RegisterBase->Port_GPIODR4R = PORT_4MA_DRIVE_EN_32_37 ;
-    RegisterBase->Port_GPIODR8R = PORT_8MA_DRIVE_EN_32_37 ;
-
-    RegisterBase->Port_GPIOSLR = PORT_SLEW_RATE_CTL_EN_32_37 ;
-
-    RegisterBase->Port_GPIOADCCTL = PORT_ADC_TRIGGER_EN_32_37 ;
-    RegisterBase->Port_GPIODMACTL = PORT_DMA_TRIGGER_EN_32_37 ;
-
-    /*********************************************************************************/
-
-    RegisterBase =  PORT_BASE_REG_EQU(PORT_F_NUMBER) ;
-
-    RegisterBase->Port_GPIODIR = PORT_MODE_PUSH_OUT_38_42 | PORT_MODE_DRAIN_OUT_38_42 & ~PORT_MODE_DIGITAL_IN_38_42 & ~PORT_MODE_ANALOG_IN_38_42 ;
-    RegisterBase->Port_GPIOAFSEL = PORT_MODE_PUSH_ALT_38_42 | PORT_MODE_DRAIN_ALT_38_42 & ~PORT_MODE_DIGITAL_IN_38_42 & ~PORT_MODE_ANALOG_IN_38_42 & ~PORT_MODE_PUSH_OUT_38_42 & ~PORT_MODE_DRAIN_OUT_38_42 ;
-    RegisterBase->Port_GPIOODR = PORT_MODE_DRAIN_OUT_38_42 | PORT_MODE_DRAIN_ALT_38_42  & ~PORT_MODE_PUSH_OUT_38_42 & ~PORT_MODE_PUSH_ALT_38_42 ;
-    RegisterBase->Port_GPIODEN = ~PORT_MODE_TRI_STATE_38_42 & ~PORT_MODE_ANALOG_IN_38_42 ;
-    RegisterBase->Port_GPIOAMSEL = PORT_MODE_ANALOG_IN_38_42 & ~PORT_MODE_DIGITAL_IN_38_42 & ~PORT_MODE_PUSH_OUT_38_42 & ~PORT_MODE_DRAIN_OUT_38_42 & ~PORT_MODE_PUSH_ALT_38_42 & ~PORT_MODE_DRAIN_ALT_38_42 & ~PORT_MODE_TRI_STATE_38_42 ;
-
-    RegisterBase->Port_GPIOPCTL = PORT_PERIPHERAL_38_42 ;
-
-    RegisterBase->Port_GPIOPUR = PORT_INTERNAL_RES_TYPE_38_42 & PORT_INTERNAL_RES_EN_38_42 ;
-    RegisterBase->Port_GPIOPDR = ~PORT_INTERNAL_RES_TYPE_38_42 & PORT_INTERNAL_RES_EN_38_42 ;
-
-    RegisterBase->Port_GPIODR2R = PORT_2MA_DRIVE_EN_38_42 ;
-    RegisterBase->Port_GPIODR4R = PORT_4MA_DRIVE_EN_38_42 ;
-    RegisterBase->Port_GPIODR8R = PORT_8MA_DRIVE_EN_38_42 ;
-
-    RegisterBase->Port_GPIOSLR = PORT_SLEW_RATE_CTL_EN_38_42 ;
-
-    RegisterBase->Port_GPIOADCCTL = PORT_ADC_TRIGGER_EN_38_42 ;
-    RegisterBase->Port_GPIODMACTL = PORT_DMA_TRIGGER_EN_38_42 ;
-
+        RegisterBase->Port_GPIOADCCTL = PORT_ADC_TRIGGER_EN_38_42 ;
+        RegisterBase->Port_GPIODMACTL = PORT_DMA_TRIGGER_EN_38_42 ;
+    }
+    else
+    {
+    }
 
     /*********************************************************************************/
 

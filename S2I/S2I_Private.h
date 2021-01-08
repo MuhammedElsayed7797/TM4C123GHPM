@@ -52,16 +52,16 @@
 
 typedef volatile struct
 {
-    uint32 S2I_SSICR0_REG ;
-    uint32 S2I_SSICR1_REG ;
-    uint32 S2I_SSIDR_REG ;
-    uint32 S2I_SSISR_REG ;
-    uint32 S2I_SSICPSR_REG ;
-    uint32 S2I_SSIIM_REG ;
-    uint32 S2I_SSIRIS_REG ;
-    uint32 S2I_SSIMIS_REG ;
-    uint32 S2I_SSIICR_REG ;
-    uint32 S2I_SSIDMACTL_REG ;
+    uint32 S2I_SSICR0 ;
+    uint32 S2I_SSICR1 ;
+    uint32 S2I_SSIDR ;
+    uint32 S2I_SSISR ;
+    uint32 S2I_SSICPSR ;
+    uint32 S2I_SSIIM ;
+    uint32 S2I_SSIRIS ;
+    uint32 S2I_SSIMIS ;
+    uint32 S2I_SSIICR ;
+    uint32 S2I_SSIDMACTL ;
     uint32 S2I_Empty1 [6] ;
 
 

@@ -25,74 +25,95 @@ void ( * S2I_IsrPtr_Arr [S2I_ISR_NUMBER] ) (void) = {NULL_PTR} ;
  * this function will initialize all SPI modules, according to S2I_Cfg.h file.
  * it will initialize clock, interrupt mask, SSI and SPI modes, DMA feature enable.
  * follow rules demonstrated in S2I_Cfg.h file to make proper initialization .
+ * Mask will determine modules to be initiated according whether module bit in Mask is set or not
+ * there're 4 modules 0~3, LSB is assigned to module0 and 4th bit assigned to module3
+ * don't initiate a module with disabled clock or fault exception will be generated
  */
 
-void S2I_Init(void)
+void S2I_Init(uint8 Mask)
 
 {
     S2I_RegisterMap_Struct * RegisterBase = NULL_PTR ;
 
     /*********************************************************************************/
 
-    RegisterBase = S2I_MODULE_0_BASE ;
 
-    CLR_BIT( (S2I_MODULE_0_BASE)->S2I_SSICR1_REG, S2I_ENABLE_BIT_POS ) ;
-    RegisterBase->S2I_SSIIM_REG = FALSE;
+    if ( (Mask>>S2I_MODULE_0) & TRUE )
+    {
+        RegisterBase = S2I_MODULE_0_BASE ;
 
-    *S2I_MODULE_0_SSICC_REG = S2I_MOD_0_CLOCK_SOURCE ;
-    RegisterBase->S2I_SSICR0_REG = (S2I_MOD_0_DIVISON_FACTOR<<S2I_SCR_FIELD_OFFSET) | (S2I_MOD_0_SPI_MODE<<S2I_SPI_FIELD_OFFSET) | (S2I_MOD_0_FRAME_TYPE<<S2I_FRAME_FIELD_OFFSET) | (S2I_MOD_0_FRAME_WIDTH) ;
-    RegisterBase->S2I_SSICR1_REG = (S2I_MOD_0_EMPTY_TX_INT<<S2I_EOT_BIT_POS) | (S2I_MOD_0_DIS_MASTER<<S2I_MASTER_BIT_POS) | (S2I_MOD_0_LOOP_BACK) ;
-    RegisterBase->S2I_SSICPSR_REG = S2I_MOD_0_PRESCALER ;
-    RegisterBase->S2I_SSIDMACTL_REG = S2I_MOD_0_EN_DMA;
-    RegisterBase->S2I_SSIICR_REG = S2I_INTERRUPT_CLR_MASK;
-    RegisterBase->S2I_SSIIM_REG = S2I_MOD_0_EN_INTERRUPT;
+        CLR_BIT( (S2I_MODULE_0_BASE)->S2I_SSICR1, S2I_ENABLE_BIT_POS ) ;
+        RegisterBase->S2I_SSIIM = FALSE;
 
-    /*********************************************************************************/
+        *S2I_MODULE_0_SSICC_REG = S2I_MOD_0_CLOCK_SOURCE ;
+        RegisterBase->S2I_SSICR0 = (S2I_MOD_0_DIVISON_FACTOR<<S2I_SCR_FIELD_OFFSET) | (S2I_MOD_0_SPI_MODE<<S2I_SPI_FIELD_OFFSET) | (S2I_MOD_0_FRAME_TYPE<<S2I_FRAME_FIELD_OFFSET) | (S2I_MOD_0_FRAME_WIDTH) ;
+        RegisterBase->S2I_SSICR1 = (S2I_MOD_0_EMPTY_TX_INT<<S2I_EOT_BIT_POS) | (S2I_MOD_0_DIS_MASTER<<S2I_MASTER_BIT_POS) | (S2I_MOD_0_LOOP_BACK) ;
+        RegisterBase->S2I_SSICPSR = S2I_MOD_0_PRESCALER ;
+        RegisterBase->S2I_SSIDMACTL = S2I_MOD_0_EN_DMA;
+        RegisterBase->S2I_SSIICR = S2I_INTERRUPT_CLR_MASK;
+        RegisterBase->S2I_SSIIM = S2I_MOD_0_EN_INTERRUPT;
+    }
+    else
+    {
+    }
 
-    RegisterBase = S2I_MODULE_1_BASE ;
+    if ( (Mask>>S2I_MODULE_1) & TRUE )
+    {
+        RegisterBase = S2I_MODULE_1_BASE ;
 
-    CLR_BIT( (S2I_MODULE_1_BASE)->S2I_SSICR1_REG, S2I_ENABLE_BIT_POS ) ;
-    RegisterBase->S2I_SSIIM_REG = FALSE;
+        CLR_BIT( (S2I_MODULE_1_BASE)->S2I_SSICR1, S2I_ENABLE_BIT_POS ) ;
+        RegisterBase->S2I_SSIIM = FALSE;
 
-    *S2I_MODULE_1_SSICC_REG = S2I_MOD_1_CLOCK_SOURCE ;
-    RegisterBase->S2I_SSICR0_REG = (S2I_MOD_1_DIVISON_FACTOR<<S2I_SCR_FIELD_OFFSET) | (S2I_MOD_1_SPI_MODE<<S2I_SPI_FIELD_OFFSET) | (S2I_MOD_1_FRAME_TYPE<<S2I_FRAME_FIELD_OFFSET) | (S2I_MOD_1_FRAME_WIDTH) ;
-    RegisterBase->S2I_SSICR1_REG = (S2I_MOD_1_EMPTY_TX_INT<<S2I_EOT_BIT_POS) | (S2I_MOD_1_DIS_MASTER<<S2I_MASTER_BIT_POS) | (S2I_MOD_1_LOOP_BACK) ;
-    RegisterBase->S2I_SSICPSR_REG = S2I_MOD_1_PRESCALER ;
-    RegisterBase->S2I_SSIDMACTL_REG = S2I_MOD_1_EN_DMA;
-    RegisterBase->S2I_SSIICR_REG = S2I_INTERRUPT_CLR_MASK;
-    RegisterBase->S2I_SSIIM_REG = S2I_MOD_1_EN_INTERRUPT;
+        *S2I_MODULE_1_SSICC_REG = S2I_MOD_1_CLOCK_SOURCE ;
+        RegisterBase->S2I_SSICR0 = (S2I_MOD_1_DIVISON_FACTOR<<S2I_SCR_FIELD_OFFSET) | (S2I_MOD_1_SPI_MODE<<S2I_SPI_FIELD_OFFSET) | (S2I_MOD_1_FRAME_TYPE<<S2I_FRAME_FIELD_OFFSET) | (S2I_MOD_1_FRAME_WIDTH) ;
+        RegisterBase->S2I_SSICR1 = (S2I_MOD_1_EMPTY_TX_INT<<S2I_EOT_BIT_POS) | (S2I_MOD_1_DIS_MASTER<<S2I_MASTER_BIT_POS) | (S2I_MOD_1_LOOP_BACK) ;
+        RegisterBase->S2I_SSICPSR = S2I_MOD_1_PRESCALER ;
+        RegisterBase->S2I_SSIDMACTL = S2I_MOD_1_EN_DMA;
+        RegisterBase->S2I_SSIICR = S2I_INTERRUPT_CLR_MASK;
+        RegisterBase->S2I_SSIIM = S2I_MOD_1_EN_INTERRUPT;
+    }
+    else
+    {
+    }
 
-    /*********************************************************************************/
+    if ( (Mask>>S2I_MODULE_2) & TRUE )
+        {
+            RegisterBase = S2I_MODULE_2_BASE ;
 
-    RegisterBase = S2I_MODULE_2_BASE ;
+            CLR_BIT( (S2I_MODULE_2_BASE)->S2I_SSICR1, S2I_ENABLE_BIT_POS ) ;
+            RegisterBase->S2I_SSIIM = FALSE;
 
-    CLR_BIT( (S2I_MODULE_2_BASE)->S2I_SSICR1_REG, S2I_ENABLE_BIT_POS ) ;
-    RegisterBase->S2I_SSIIM_REG = FALSE;
+            *S2I_MODULE_2_SSICC_REG = S2I_MOD_2_CLOCK_SOURCE ;
+            RegisterBase->S2I_SSICR0 = (S2I_MOD_2_DIVISON_FACTOR<<S2I_SCR_FIELD_OFFSET) | (S2I_MOD_2_SPI_MODE<<S2I_SPI_FIELD_OFFSET) | (S2I_MOD_2_FRAME_TYPE<<S2I_FRAME_FIELD_OFFSET) | (S2I_MOD_2_FRAME_WIDTH) ;
+            RegisterBase->S2I_SSICR1 = (S2I_MOD_2_EMPTY_TX_INT<<S2I_EOT_BIT_POS) | (S2I_MOD_2_DIS_MASTER<<S2I_MASTER_BIT_POS) | (S2I_MOD_2_LOOP_BACK) ;
+            RegisterBase->S2I_SSICPSR = S2I_MOD_2_PRESCALER ;
+            RegisterBase->S2I_SSIDMACTL = S2I_MOD_2_EN_DMA;
+            RegisterBase->S2I_SSIICR = S2I_INTERRUPT_CLR_MASK;
+            RegisterBase->S2I_SSIIM = S2I_MOD_2_EN_INTERRUPT;
+    }
+    else
+    {
+    }
 
-    *S2I_MODULE_2_SSICC_REG = S2I_MOD_2_CLOCK_SOURCE ;
-    RegisterBase->S2I_SSICR0_REG = (S2I_MOD_2_DIVISON_FACTOR<<S2I_SCR_FIELD_OFFSET) | (S2I_MOD_2_SPI_MODE<<S2I_SPI_FIELD_OFFSET) | (S2I_MOD_2_FRAME_TYPE<<S2I_FRAME_FIELD_OFFSET) | (S2I_MOD_2_FRAME_WIDTH) ;
-    RegisterBase->S2I_SSICR1_REG = (S2I_MOD_2_EMPTY_TX_INT<<S2I_EOT_BIT_POS) | (S2I_MOD_2_DIS_MASTER<<S2I_MASTER_BIT_POS) | (S2I_MOD_2_LOOP_BACK) ;
-    RegisterBase->S2I_SSICPSR_REG = S2I_MOD_2_PRESCALER ;
-    RegisterBase->S2I_SSIDMACTL_REG = S2I_MOD_2_EN_DMA;
-    RegisterBase->S2I_SSIICR_REG = S2I_INTERRUPT_CLR_MASK;
-    RegisterBase->S2I_SSIIM_REG = S2I_MOD_2_EN_INTERRUPT;
+    if ( (Mask>>S2I_MODULE_3) & TRUE )
+    {
+        RegisterBase = S2I_MODULE_3_BASE ;
 
-    /*********************************************************************************/
+        CLR_BIT( (S2I_MODULE_3_BASE)->S2I_SSICR1, S2I_ENABLE_BIT_POS ) ;
+        RegisterBase->S2I_SSIIM = FALSE;
 
-    RegisterBase = S2I_MODULE_3_BASE ;
+        *S2I_MODULE_3_SSICC_REG = S2I_MOD_3_CLOCK_SOURCE ;
+        RegisterBase->S2I_SSICR0 = (S2I_MOD_3_DIVISON_FACTOR<<S2I_SCR_FIELD_OFFSET) | (S2I_MOD_3_SPI_MODE<<S2I_SPI_FIELD_OFFSET) | (S2I_MOD_3_FRAME_TYPE<<S2I_FRAME_FIELD_OFFSET) | (S2I_MOD_3_FRAME_WIDTH) ;
+        RegisterBase->S2I_SSICR1 = (S2I_MOD_3_EMPTY_TX_INT<<S2I_EOT_BIT_POS) | (S2I_MOD_3_DIS_MASTER<<S2I_MASTER_BIT_POS) | (S2I_MOD_3_LOOP_BACK) ;
+        RegisterBase->S2I_SSICPSR = S2I_MOD_3_PRESCALER ;
+        RegisterBase->S2I_SSIDMACTL = S2I_MOD_3_EN_DMA;
+        RegisterBase->S2I_SSIICR = S2I_INTERRUPT_CLR_MASK;
+        RegisterBase->S2I_SSIIM = S2I_MOD_3_EN_INTERRUPT;
 
-    CLR_BIT( (S2I_MODULE_3_BASE)->S2I_SSICR1_REG, S2I_ENABLE_BIT_POS ) ;
-    RegisterBase->S2I_SSIIM_REG = FALSE;
-
-    *S2I_MODULE_3_SSICC_REG = S2I_MOD_3_CLOCK_SOURCE ;
-    RegisterBase->S2I_SSICR0_REG = (S2I_MOD_3_DIVISON_FACTOR<<S2I_SCR_FIELD_OFFSET) | (S2I_MOD_3_SPI_MODE<<S2I_SPI_FIELD_OFFSET) | (S2I_MOD_3_FRAME_TYPE<<S2I_FRAME_FIELD_OFFSET) | (S2I_MOD_3_FRAME_WIDTH) ;
-    RegisterBase->S2I_SSICR1_REG = (S2I_MOD_3_EMPTY_TX_INT<<S2I_EOT_BIT_POS) | (S2I_MOD_3_DIS_MASTER<<S2I_MASTER_BIT_POS) | (S2I_MOD_3_LOOP_BACK) ;
-    RegisterBase->S2I_SSICPSR_REG = S2I_MOD_3_PRESCALER ;
-    RegisterBase->S2I_SSIDMACTL_REG = S2I_MOD_3_EN_DMA;
-    RegisterBase->S2I_SSIICR_REG = S2I_INTERRUPT_CLR_MASK;
-    RegisterBase->S2I_SSIIM_REG = S2I_MOD_3_EN_INTERRUPT;
-
-    /*********************************************************************************/
+    }
+    else
+    {
+    }
 
     return ;
 }
@@ -115,11 +136,11 @@ void S2I_Init(void)
 
 void S2I_SetClock( S2I_ModuleType ModuleId, uint8 Divide, uint8 Prescaler)
 {
-    uint32 Temp = ( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0_REG & S2I_SCR_FIELD_MASK ) | (Prescaler << S2I_SCR_FIELD_OFFSET) ;
+    uint32 Temp = ( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0 & S2I_SCR_FIELD_MASK ) | (Prescaler << S2I_SCR_FIELD_OFFSET) ;
 
 
-    (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0_REG = Temp ;
-    (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICPSR_REG = Prescaler ;
+    (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0 = Temp ;
+    (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICPSR = Prescaler ;
 
 
     return ;
@@ -137,9 +158,9 @@ void S2I_SetClock( S2I_ModuleType ModuleId, uint8 Divide, uint8 Prescaler)
 
 void S2I_SpiMode( S2I_ModuleType ModuleId, S2I_SpiModeType Mode )
 {
-    uint32 Temp = ( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0_REG & S2I_SPI_FIELD_MASK ) | (Mode << S2I_SPI_FIELD_OFFSET) ;
+    uint32 Temp = ( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0 & S2I_SPI_FIELD_MASK ) | (Mode << S2I_SPI_FIELD_OFFSET) ;
 
-    (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0_REG = Temp ;
+    (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0 = Temp ;
 
     return ;
 }
@@ -156,9 +177,9 @@ void S2I_SpiMode( S2I_ModuleType ModuleId, S2I_SpiModeType Mode )
 
 void S2I_SetFrame ( S2I_ModuleType ModuleId, S2I_FrameType Frame )
 {
-    uint32 Temp = ( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0_REG & S2I_FRAME_FIELD_MASK ) | (Frame << S2I_FRAME_FIELD_OFFSET) ;
+    uint32 Temp = ( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0 & S2I_FRAME_FIELD_MASK ) | (Frame << S2I_FRAME_FIELD_OFFSET) ;
 
-    (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0_REG = Temp ;
+    (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0 = Temp ;
 
     return ;
 }
@@ -175,9 +196,9 @@ void S2I_SetFrame ( S2I_ModuleType ModuleId, S2I_FrameType Frame )
 
 void S2I_FrameWidth ( S2I_ModuleType ModuleId, uint8 Width )
 {
-    uint32 Temp = ( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0_REG & S2I_WIDTH_FIELD_MASK ) | Width ;
+    uint32 Temp = ( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0 & S2I_WIDTH_FIELD_MASK ) | Width ;
 
-    (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0_REG = Temp ;
+    (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR0 = Temp ;
 
     return ;
 }
@@ -195,7 +216,7 @@ void S2I_FrameWidth ( S2I_ModuleType ModuleId, uint8 Width )
 void S2I_MasterDisable ( S2I_ModuleType ModuleId, boolean Disable )
 {
 
-    ASSIGN_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR1_REG, S2I_ENABLE_BIT_POS, Disable ) ;
+    ASSIGN_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR1, S2I_ENABLE_BIT_POS, Disable ) ;
 
     return ;
 }
@@ -211,7 +232,7 @@ void S2I_MasterDisable ( S2I_ModuleType ModuleId, boolean Disable )
 
 void S2I_TransferStart ( S2I_ModuleType ModuleId )
 {
-    SET_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR1_REG, S2I_ENABLE_BIT_POS ) ;
+    SET_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR1, S2I_ENABLE_BIT_POS ) ;
 
     return ;
 }
@@ -228,7 +249,7 @@ void S2I_TransferStart ( S2I_ModuleType ModuleId )
 void S2I_TransferStop ( S2I_ModuleType ModuleId )
 {
 
-    CLR_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR1_REG, S2I_ENABLE_BIT_POS ) ;
+    CLR_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR1, S2I_ENABLE_BIT_POS ) ;
 
     return ;
 }
@@ -246,7 +267,7 @@ void S2I_TransferStop ( S2I_ModuleType ModuleId )
 void S2I_LoopbackEnable ( S2I_ModuleType ModuleId, boolean Enable )
 {
 
-    ASSIGN_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR1_REG, S2I_LBM_BIT_POS, Enable ) ;
+    ASSIGN_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR1, S2I_LBM_BIT_POS, Enable ) ;
 
     return ;
 }
@@ -263,7 +284,7 @@ void S2I_LoopbackEnable ( S2I_ModuleType ModuleId, boolean Enable )
 boolean S2I_ModuleBusy ( S2I_ModuleType ModuleId )
 {
 
-    return GET_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSISR_REG, S2I_BSY_BIT_POS ) ;
+    return GET_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSISR, S2I_BSY_BIT_POS ) ;
 }
 
 /*********************************************************************************/
@@ -276,7 +297,7 @@ boolean S2I_ModuleBusy ( S2I_ModuleType ModuleId )
 
 S2I_BufferStateType S2I_BufferState ( S2I_ModuleType ModuleId, S2I_BufferType BufferId)
 {
-    S2I_BufferStateType ReturnResult = (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSISR_REG ;
+    S2I_BufferStateType ReturnResult = (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSISR ;
     ReturnResult >>= (BufferId + BufferId) ;
     ReturnResult ^= BufferId * 2 ;
     return ReturnResult & S2I_BUFFER_STATE_MASK ;
@@ -294,7 +315,7 @@ S2I_BufferStateType S2I_BufferState ( S2I_ModuleType ModuleId, S2I_BufferType Bu
 
 void S2I_TxBuffer_EmptyInterrupt ( S2I_ModuleType ModuleId, boolean Enable)
 {
-    ASSIGN_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR1_REG, S2I_EOT_BIT_POS, Enable ) ;
+    ASSIGN_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSICR1, S2I_EOT_BIT_POS, Enable ) ;
     return ;
 }
 
@@ -312,7 +333,7 @@ void S2I_TxBuffer_EmptyInterrupt ( S2I_ModuleType ModuleId, boolean Enable)
 
 void S2I_EnableInterrupt ( S2I_ModuleType ModuleId, S2I_InterruptType InterruptID )
 {
-   SET_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSIIM_REG, InterruptID) ;
+   SET_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSIIM, InterruptID) ;
 
     return ;
 }
@@ -327,7 +348,7 @@ void S2I_EnableInterrupt ( S2I_ModuleType ModuleId, S2I_InterruptType InterruptI
 
 void S2I_DisableInterrupt ( S2I_ModuleType ModuleId, S2I_InterruptType InterruptID )
 {
-    CLR_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSIIM_REG, InterruptID) ;
+    CLR_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSIIM, InterruptID) ;
 
     return ;
 }
@@ -345,7 +366,7 @@ void S2I_DisableInterrupt ( S2I_ModuleType ModuleId, S2I_InterruptType Interrupt
 
 boolean S2I_GetInterruptState ( S2I_ModuleType ModuleId, S2I_InterruptType InterruptID )
 {
-    return  GET_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSIMIS_REG, InterruptID) ; ;
+    return  GET_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSIMIS, InterruptID) ; ;
 }
 
 
@@ -363,7 +384,7 @@ boolean S2I_GetInterruptState ( S2I_ModuleType ModuleId, S2I_InterruptType Inter
 
 boolean S2I_GetEventState ( S2I_ModuleType ModuleId, S2I_InterruptType InterruptID )
 {
-    return  GET_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSIRIS_REG, InterruptID) ; ;
+    return  GET_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSIRIS, InterruptID) ; ;
 }
 
 
@@ -380,7 +401,7 @@ boolean S2I_GetEventState ( S2I_ModuleType ModuleId, S2I_InterruptType Interrupt
 
 void S2I_ClearEvent ( S2I_ModuleType ModuleId, S2I_InterruptType InterruptID )
 {
-    SET_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSIICR_REG, InterruptID) ;
+    SET_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSIICR, InterruptID) ;
 
     return ;
 }
@@ -398,7 +419,7 @@ void S2I_ClearEvent ( S2I_ModuleType ModuleId, S2I_InterruptType InterruptID )
 
 void S2I_DmaEnable ( S2I_ModuleType ModuleId, S2I_BufferType BufferId, boolean Enable )
 {
-    ASSIGN_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSIDMACTL_REG, BufferId, Enable ) ;
+    ASSIGN_BIT( (S2I_MODULE_0_BASE + ModuleId*S2I_MODULE_OFFSET_1 )->S2I_SSIDMACTL, BufferId, Enable ) ;
 
     return ;
 }

@@ -167,10 +167,12 @@ typedef uint8 Port_ModeType ;
  * slew rate, protection lock , ADC & DMA trigger feature .
  * initialization will be according to setting in Port_Cfg.h file .
  * follow rules demonstrated in this Port_Cfg.h file to make proper initialization .
- *
+ * Mask will determine ports to be initiated according whether port bit in Mask is set or not
+ * there're 6 ports A~F, LSB is assigned to A and 6th bit assigned to F
+ * don't initiate a port with disabled clock or fault exception will be generated
  */
 
-void Port_Init (void) ;
+void Port_Init (uint8 Mask ) ;
 
 
 /*********************************************************************************/

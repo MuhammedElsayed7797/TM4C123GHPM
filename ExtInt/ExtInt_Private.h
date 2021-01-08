@@ -111,6 +111,16 @@ void ExtInt_PortF_ISR (void) ;
 
 
 /*********************************************************************************/
+/* used inside ExtInt_Init function */
+
+#define EXTINT_PORT_A_NUMBER           0
+#define EXTINT_PORT_B_NUMBER           1
+#define EXTINT_PORT_C_NUMBER           2
+#define EXTINT_PORT_D_NUMBER           3
+#define EXTINT_PORT_E_NUMBER           4
+#define EXTINT_PORT_F_NUMBER           5
+
+/*********************************************************************************/
 
 
 #endif /* EXTINT_PRIVATE_H_ */

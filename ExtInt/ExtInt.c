@@ -22,67 +22,105 @@ void (* ExtInt_IsrPtr_Arr [EXTINT_ISR_NUMBER] ) (void) = {NULL_PTR} ;
  * this function will initialize All pins' interrupt modes & masks
  * initialization will be according to setting in ExtInt_Cfg.h file .
  * follow rules demonstrated in ExtInt_Cfg.h file to make proper initialization .
+ * Mask will determine ports to be initiated according whether port bit in Mask is set or not
+ * there're 6 ports A~F, LSB is assigned to A and 6th bit assigned to F
+ * don't initiate a port with disabled clock or fault exception will be generated
  */
 
-void ExtInt_Init (void)
+void ExtInt_Init (uint8 Mask )
 {
 
     ExtInt_RegisterMap_Struct * RegisterBase = NULL_PTR ;
 
     /*********************************************************************************/
 
-    RegisterBase =  EXTINT_BASE_REG_EQU(EXTINT_PORT_A) ;
+    if ( (Mask>>EXTINT_PORT_A_NUMBER) & TRUE )
+    {
+        RegisterBase =  EXTINT_BASE_REG_EQU(EXTINT_PORT_A) ;
 
-    RegisterBase->ExtInt_GPIOIS = EXTINT_MODE_LOW_0_7 | EXTINT_MODE_HIGH_0_7 & ~EXTINT_MODE_FALLING_0_7 & ~EXTINT_MODE_RISING_0_7 & ~EXTINT_MODE_BOTH_0_7 ;
-    RegisterBase->ExtInt_GPIOIBE = EXTINT_MODE_BOTH_0_7 & ~EXTINT_MODE_FALLING_0_7 & ~EXTINT_MODE_RISING_0_7 ;
-    RegisterBase->ExtInt_GPIOIEV = EXTINT_MODE_RISING_0_7 | EXTINT_MODE_HIGH_0_7 & ~EXTINT_MODE_FALLING_0_7 & ~EXTINT_MODE_LOW_0_7 ;
-    RegisterBase->ExtInt_GPIOIM = EXTINT_ENABLE_0_7 ;
-
-    /*********************************************************************************/
-
-    RegisterBase =  EXTINT_BASE_REG_EQU(EXTINT_PORT_B) ;
-
-    RegisterBase->ExtInt_GPIOIS = EXTINT_MODE_LOW_8_15 | EXTINT_MODE_HIGH_8_15 & ~EXTINT_MODE_FALLING_8_15 & ~EXTINT_MODE_RISING_8_15 & ~EXTINT_MODE_BOTH_8_15 ;
-    RegisterBase->ExtInt_GPIOIBE = EXTINT_MODE_BOTH_8_15 & ~EXTINT_MODE_FALLING_8_15 & ~EXTINT_MODE_RISING_8_15 ;
-    RegisterBase->ExtInt_GPIOIEV = EXTINT_MODE_RISING_8_15 | EXTINT_MODE_HIGH_8_15 & ~EXTINT_MODE_FALLING_8_15 & ~EXTINT_MODE_LOW_8_15 ;
-    RegisterBase->ExtInt_GPIOIM = EXTINT_ENABLE_8_15 ;
-
+        RegisterBase->ExtInt_GPIOIS = EXTINT_MODE_LOW_0_7 | EXTINT_MODE_HIGH_0_7 & ~EXTINT_MODE_FALLING_0_7 & ~EXTINT_MODE_RISING_0_7 & ~EXTINT_MODE_BOTH_0_7 ;
+        RegisterBase->ExtInt_GPIOIBE = EXTINT_MODE_BOTH_0_7 & ~EXTINT_MODE_FALLING_0_7 & ~EXTINT_MODE_RISING_0_7 ;
+        RegisterBase->ExtInt_GPIOIEV = EXTINT_MODE_RISING_0_7 | EXTINT_MODE_HIGH_0_7 & ~EXTINT_MODE_FALLING_0_7 & ~EXTINT_MODE_LOW_0_7 ;
+        RegisterBase->ExtInt_GPIOIM = EXTINT_ENABLE_0_7 ;
+    }
+    else
+    {
+    }
 
     /*********************************************************************************/
 
-    RegisterBase =  EXTINT_BASE_REG_EQU(EXTINT_PORT_C) ;
+    if ( (Mask>>EXTINT_PORT_B_NUMBER) & TRUE )
+    {
+        RegisterBase =  EXTINT_BASE_REG_EQU(EXTINT_PORT_B) ;
 
-    RegisterBase->ExtInt_GPIOIS = EXTINT_MODE_LOW_16_23 | EXTINT_MODE_HIGH_16_23 & ~EXTINT_MODE_FALLING_16_23 & ~EXTINT_MODE_RISING_16_23 & ~EXTINT_MODE_BOTH_16_23 ;
-    RegisterBase->ExtInt_GPIOIBE = EXTINT_MODE_BOTH_16_23 & ~EXTINT_MODE_FALLING_16_23 & ~EXTINT_MODE_RISING_16_23 ;
-    RegisterBase->ExtInt_GPIOIEV = EXTINT_MODE_RISING_16_23 | EXTINT_MODE_HIGH_16_23 & ~EXTINT_MODE_FALLING_16_23 & ~EXTINT_MODE_LOW_16_23 ;
-    RegisterBase->ExtInt_GPIOIM = EXTINT_ENABLE_16_23 ;
-
-    /*********************************************************************************/
-
-    RegisterBase =  EXTINT_BASE_REG_EQU(EXTINT_PORT_D) ;
-
-    RegisterBase->ExtInt_GPIOIS = EXTINT_MODE_LOW_24_31 | EXTINT_MODE_HIGH_24_31 & ~EXTINT_MODE_FALLING_24_31 & ~EXTINT_MODE_RISING_24_31 & ~EXTINT_MODE_BOTH_24_31 ;
-    RegisterBase->ExtInt_GPIOIBE = EXTINT_MODE_BOTH_24_31 & ~EXTINT_MODE_FALLING_24_31 & ~EXTINT_MODE_RISING_24_31 ;
-    RegisterBase->ExtInt_GPIOIEV = EXTINT_MODE_RISING_24_31 | EXTINT_MODE_HIGH_24_31 & ~EXTINT_MODE_FALLING_24_31 & ~EXTINT_MODE_LOW_24_31 ;
-    RegisterBase->ExtInt_GPIOIM = EXTINT_ENABLE_24_31 ;
+        RegisterBase->ExtInt_GPIOIS = EXTINT_MODE_LOW_8_15 | EXTINT_MODE_HIGH_8_15 & ~EXTINT_MODE_FALLING_8_15 & ~EXTINT_MODE_RISING_8_15 & ~EXTINT_MODE_BOTH_8_15 ;
+        RegisterBase->ExtInt_GPIOIBE = EXTINT_MODE_BOTH_8_15 & ~EXTINT_MODE_FALLING_8_15 & ~EXTINT_MODE_RISING_8_15 ;
+        RegisterBase->ExtInt_GPIOIEV = EXTINT_MODE_RISING_8_15 | EXTINT_MODE_HIGH_8_15 & ~EXTINT_MODE_FALLING_8_15 & ~EXTINT_MODE_LOW_8_15 ;
+        RegisterBase->ExtInt_GPIOIM = EXTINT_ENABLE_8_15 ;
+    }
+    else
+    {
+    }
 
     /*********************************************************************************/
 
-    RegisterBase =  EXTINT_BASE_REG_EQU(EXTINT_PORT_E) ;
+    if ( (Mask>>EXTINT_PORT_C_NUMBER) & TRUE )
+    {
+        RegisterBase =  EXTINT_BASE_REG_EQU(EXTINT_PORT_C) ;
 
-    RegisterBase->ExtInt_GPIOIS = EXTINT_MODE_LOW_32_37 | EXTINT_MODE_HIGH_32_37 & ~EXTINT_MODE_FALLING_32_37 & ~EXTINT_MODE_RISING_32_37 & ~EXTINT_MODE_BOTH_32_37 ;
-    RegisterBase->ExtInt_GPIOIBE = EXTINT_MODE_BOTH_32_37 & ~EXTINT_MODE_FALLING_32_37 & ~EXTINT_MODE_RISING_32_37 ;
-    RegisterBase->ExtInt_GPIOIEV = EXTINT_MODE_RISING_32_37 | EXTINT_MODE_HIGH_32_37 & ~EXTINT_MODE_FALLING_32_37 & ~EXTINT_MODE_LOW_32_37 ;
-    RegisterBase->ExtInt_GPIOIM = EXTINT_ENABLE_32_37 ;
+        RegisterBase->ExtInt_GPIOIS = EXTINT_MODE_LOW_16_23 | EXTINT_MODE_HIGH_16_23 & ~EXTINT_MODE_FALLING_16_23 & ~EXTINT_MODE_RISING_16_23 & ~EXTINT_MODE_BOTH_16_23 ;
+        RegisterBase->ExtInt_GPIOIBE = EXTINT_MODE_BOTH_16_23 & ~EXTINT_MODE_FALLING_16_23 & ~EXTINT_MODE_RISING_16_23 ;
+        RegisterBase->ExtInt_GPIOIEV = EXTINT_MODE_RISING_16_23 | EXTINT_MODE_HIGH_16_23 & ~EXTINT_MODE_FALLING_16_23 & ~EXTINT_MODE_LOW_16_23 ;
+        RegisterBase->ExtInt_GPIOIM = EXTINT_ENABLE_16_23 ;
+    }
+    else
+    {
+    }
 
     /*********************************************************************************/
 
-    RegisterBase =  EXTINT_BASE_REG_EQU(EXTINT_PORT_F) ;
+    if ( (Mask>>EXTINT_PORT_D_NUMBER) & TRUE )
+    {
+        RegisterBase =  EXTINT_BASE_REG_EQU(EXTINT_PORT_D) ;
 
-    RegisterBase->ExtInt_GPIOIS = EXTINT_MODE_LOW_38_42 | EXTINT_MODE_HIGH_38_42 & ~EXTINT_MODE_FALLING_38_42 & ~EXTINT_MODE_RISING_38_42 & ~EXTINT_MODE_BOTH_38_42 ;
-    RegisterBase->ExtInt_GPIOIBE = EXTINT_MODE_BOTH_38_42 & ~EXTINT_MODE_FALLING_38_42 & ~EXTINT_MODE_RISING_38_42 ;
-    RegisterBase->ExtInt_GPIOIEV = EXTINT_MODE_RISING_38_42 | EXTINT_MODE_HIGH_38_42 & ~EXTINT_MODE_FALLING_38_42 & ~EXTINT_MODE_LOW_38_42 ;
-    RegisterBase->ExtInt_GPIOIM = EXTINT_ENABLE_38_42 ;
+        RegisterBase->ExtInt_GPIOIS = EXTINT_MODE_LOW_24_31 | EXTINT_MODE_HIGH_24_31 & ~EXTINT_MODE_FALLING_24_31 & ~EXTINT_MODE_RISING_24_31 & ~EXTINT_MODE_BOTH_24_31 ;
+        RegisterBase->ExtInt_GPIOIBE = EXTINT_MODE_BOTH_24_31 & ~EXTINT_MODE_FALLING_24_31 & ~EXTINT_MODE_RISING_24_31 ;
+        RegisterBase->ExtInt_GPIOIEV = EXTINT_MODE_RISING_24_31 | EXTINT_MODE_HIGH_24_31 & ~EXTINT_MODE_FALLING_24_31 & ~EXTINT_MODE_LOW_24_31 ;
+        RegisterBase->ExtInt_GPIOIM = EXTINT_ENABLE_24_31 ;
+    }
+    else
+    {
+    }
+
+    /*********************************************************************************/
+
+    if ( (Mask>>EXTINT_PORT_E_NUMBER) & TRUE )
+    {
+        RegisterBase =  EXTINT_BASE_REG_EQU(EXTINT_PORT_E) ;
+
+        RegisterBase->ExtInt_GPIOIS = EXTINT_MODE_LOW_32_37 | EXTINT_MODE_HIGH_32_37 & ~EXTINT_MODE_FALLING_32_37 & ~EXTINT_MODE_RISING_32_37 & ~EXTINT_MODE_BOTH_32_37 ;
+        RegisterBase->ExtInt_GPIOIBE = EXTINT_MODE_BOTH_32_37 & ~EXTINT_MODE_FALLING_32_37 & ~EXTINT_MODE_RISING_32_37 ;
+        RegisterBase->ExtInt_GPIOIEV = EXTINT_MODE_RISING_32_37 | EXTINT_MODE_HIGH_32_37 & ~EXTINT_MODE_FALLING_32_37 & ~EXTINT_MODE_LOW_32_37 ;
+        RegisterBase->ExtInt_GPIOIM = EXTINT_ENABLE_32_37 ;
+    }
+    else
+    {
+    }
+
+    /*********************************************************************************/
+
+    if ( (Mask>>EXTINT_PORT_F_NUMBER) & TRUE )
+    {
+        RegisterBase =  EXTINT_BASE_REG_EQU(EXTINT_PORT_F) ;
+
+        RegisterBase->ExtInt_GPIOIS = EXTINT_MODE_LOW_38_42 | EXTINT_MODE_HIGH_38_42 & ~EXTINT_MODE_FALLING_38_42 & ~EXTINT_MODE_RISING_38_42 & ~EXTINT_MODE_BOTH_38_42 ;
+        RegisterBase->ExtInt_GPIOIBE = EXTINT_MODE_BOTH_38_42 & ~EXTINT_MODE_FALLING_38_42 & ~EXTINT_MODE_RISING_38_42 ;
+        RegisterBase->ExtInt_GPIOIEV = EXTINT_MODE_RISING_38_42 | EXTINT_MODE_HIGH_38_42 & ~EXTINT_MODE_FALLING_38_42 & ~EXTINT_MODE_LOW_38_42 ;
+        RegisterBase->ExtInt_GPIOIM = EXTINT_ENABLE_38_42 ;
+    }
+    else
+    {
+    }
 
     /*********************************************************************************/
 

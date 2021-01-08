@@ -20,6 +20,8 @@
 #define S2I_MOD_0_BUFFER_ADD        ((volatile uint32 *) 0x40008008 )
 
 
+/*********************************************************************************/
+
 /*
  * use this macros as a values for S2I_SpiModeType variables.
  * this type indicate mode of SPI format case used in SSI module.
@@ -202,9 +204,12 @@ typedef uint8 S2I_ClockType ;
  * this function will initialize all SPI modules, according to S2I_Cfg.h file.
  * it will initialize clock, interrupt mask, SSI and SPI modes, DMA feature enable.
  * follow rules demonstrated in S2I_Cfg.h file to make proper initialization .
+ * Mask will determine modules to be initiated according whether module bit in Mask is set or not
+ * there're 4 modules 0~3, LSB is assigned to module0 and 4th bit assigned to module3
+ * don't initiate a module with disabled clock or fault exception will be generated
  */
 
-void S2I_Init(void) ;
+void S2I_Init(uint8 Mask) ;
 
 
 /*********************************************************************************/
@@ -449,8 +454,3 @@ void S2I_AssignISR ( S2I_ModuleType ModuleId ,void (*FuncPtr) (void) ) ;
 
 
 #endif /* S2I_H_ */
-
-
-
-
-

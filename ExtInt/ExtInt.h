@@ -144,10 +144,13 @@ typedef uint8 ExtInt_ModeType ;
  * this function will initialize All pins' interrupt modes & masks
  * initialization will be according to setting in ExtInt_Cfg.h file .
  * follow rules demonstrated in ExtInt_Cfg.h file to make proper initialization .
+ * Mask will determine ports to be initiated according whether port bit in Mask is set or not
+ * there're 6 ports A~F, LSB is assigned to A and 6th bit assigned to F
+ * don't initiate a port with disabled clock or fault exception will be generated
  */
 
 
-void ExtInt_Init (void) ;
+void ExtInt_Init ( uint8 Mask ) ;
 
 
 /*********************************************************************************/
